@@ -228,25 +228,56 @@ SELECT fun2(1);
 ###################
 
 # 流程控制结构
+# 分支控制
+/*
+IF(expr1,expr2,expr3)
 
+CASE case_value
+	WHEN when_value THEN
+		statement_list
+	ELSE
+		statement_list
+END CASE;
 
+CASE
+	WHEN when_value THEN
+		statement_sql
+	ELSE
+		statement_sql
+END CASE;
 
+# 次方式必须放在 BEGIN...END 中
+IF search_condition THEN
+	statement_list
+ELSEIF search_condition THEN
+	statement_list
+ELSE
+	statement_list
+END IF;
+*/
 
+# 循环结构
+/*
+# 都需要放到 BEGIN...END 中
+1. WHILE
+[label:] WHILE search_condition DO
+	statement_list
+END WHILE [label];
 
+2. LOOP
+label: LOOP
+	statement_list
 
+	IF exit_condition THEN
+		LEAVE label; 
+	END IF; 
+END LOOP label;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+3. REPEAT
+[label:] REPEAT
+	statement_list
+UNTIL search_condition 
+END REPEAT [label];
+*/
 ```
 
