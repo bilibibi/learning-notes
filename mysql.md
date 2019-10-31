@@ -1,6 +1,6 @@
 source: <https://www.bilibili.com/video/av49181542>
 
-
+#### 基础命令
 
 ```mysql
 DESC seckill;
@@ -95,7 +95,11 @@ end;
 ###################
 
 # 分组函数
-# sum 求和、avg 平均值、max 最大值、min 最小值、count 计算个数
+# sum 求和
+# avg 平均值
+# max 最大值
+# min 最小值
+# count 计算个数
 
 ###################
 
@@ -280,4 +284,8 @@ UNTIL search_condition
 END REPEAT [label];
 */
 ```
+
+
+
+#### 高级特性
 
