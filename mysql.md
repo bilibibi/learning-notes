@@ -308,3 +308,60 @@ END REPEAT [label];
 
 
 
+##### Explain
+
+1. **id**：执行顺序
+
+   1. id相同，执行顺序由上到下
+   2. id不同，值越大，优先级越高，越先执行
+
+2. select_type：查询类型，用于区别普通查询、联合查询、子查询等复杂查询
+
+   1. SIMPLE：简单查询，不包含子查询或UNION
+   2. PRIMARY：查询中若包含任何复杂的子部分，最外层查询则被标记为primary
+   3. SUBQUERY：在SELECT或WHERE列表中包含子查询
+   4. DERIVED：在FROM列表中包含的子查询被标记为DERIVED(衍生)
+   5. UNION：若第二个SELECT出现在UNION之后，则被标记为UNION；
+      若UNION包含在FROM子句的子查询中，外层SELECT将被标记为DERIVED
+   6. UNION RESULT：从UNION表获取结果的SELECT
+
+3. table：表名
+
+4. **type**：查询类型 system > const > eq_ref > ref > range > index > ALL
+
+5. possible_keys：可能应用到的索引
+
+6. **key**：实际使用的索引
+
+7. key_len：索引中使用的字节数，可通过该列计算查询中使用的索引长度，在不损失精确性的情况下，长度越短越好
+
+8. ref：显示索引的那一列被使用了，如果可能的话，是一个常数。
+
+9. **rows**：大致估算出找到所需的记录所需要读取的行数
+
+10. **Extra**：包含不适合在其他列中显示但十分重要的信息
+
+    1. **Using filesort**：文件排序，无法利用索引完成排序
+
+    2. **Using temporary**：使用了临时表保存中间结果，在对查询结果排序时使用临时表，常见于排序和分组查询
+
+    3. **Using index**：表示相应的select操作中使用了覆盖索引(Covering Index)，避免访问了表的数据行
+       如果同时出现Using where，表明索引被用来执行索引键值的查找；
+       如果没有同时出现Using where，表明索引用来读取数据而非执行查找动作。
+
+       > 覆盖索引(Covering Index)，也叫索引覆盖
+       >
+       > 查询的数据只用从索引中就能够取得，不必读取数据行，即查询列被所建的索引覆盖。
+
+    4. Using where：表示使用了where过滤
+
+    5. Using join buffer：使用了连接缓存
+
+    6. Impossible where：where子句的值总是false，不能获取到任何元组
+
+    7. select tables optimized away：在没有GROUPBY子君的情况下，基于索引优化MIN/MAX操作或者对于MyISAM存储引擎优化COUNT(*)操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即完成优化。
+
+    8. distinct：优化distinct操作，在找到第一匹配的元组后即停止找同样值得动作
+
+
+
