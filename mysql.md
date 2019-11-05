@@ -304,10 +304,6 @@ END REPEAT [label];
 
 
 
-##### 索引
-
-
-
 ##### Explain
 
 1. **id**：执行顺序
@@ -362,6 +358,22 @@ END REPEAT [label];
     7. select tables optimized away：在没有GROUPBY子君的情况下，基于索引优化MIN/MAX操作或者对于MyISAM存储引擎优化COUNT(*)操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即完成优化。
 
     8. distinct：优化distinct操作，在找到第一匹配的元组后即停止找同样值得动作
+
+    
+
+    ##### 索引
+
+    **索引优化**
+
+    - 尽可能减少join语句中的NestedLoop的循环总次数；
+    - 永远用小结果集驱动大的结果集；
+    - 优先优化NestedLoop的内层循环；
+    - 保证join语句中被驱动表上join条件字段已经被索引；
+    - 当无法保证被驱动表的join条件字段被索引且内层资源充足的前提下，不要太吝啬JoinBuffer的设置；
+
+    
+
+    
 
 
 
