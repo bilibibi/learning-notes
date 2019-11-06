@@ -387,6 +387,20 @@ END REPEAT [label];
     8. 字符串不加单引号时索引会失效；
     9. 使用or时索引会失效；
 
+    **查询优化**
+
+    1. **永远小表驱动大表**
+       select * from A a where a.id in (select b.aid from B b); -> 当A表数据大于B表时用in
+       select * from A a where exists (select 1 from B b where a.id = b.aid); -> 当A表数据小于B表时用exists
+    2. order by 关键字优化
+       1. 尽量使用Index方式排序，避免使用FileSort方式
+       2. order by 语句使用索引最左前缀字段
+       3. 使用 where 子句与 order by 子句条件列组合满足索引最左前缀
+    3. group by 关键字优化
+       1. 先排序后进行分组，遵照索引建的最佳左前缀
+       2. 当无法使用索引列，增大 max_length_for_sort_data 参数的设置和增大 sort_buffer_size 参数的设置
+       3. where高于having，能写在where限定条件里就不要去having限定
+
     
 
 
