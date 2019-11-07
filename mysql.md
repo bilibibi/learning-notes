@@ -302,7 +302,7 @@ END REPEAT [label];
 9. ORDER BY
 10. LIMIT
 
-
+---
 
 ##### Explain
 
@@ -359,7 +359,7 @@ END REPEAT [label];
 
     8. distinct：优化distinct操作，在找到第一匹配的元组后即停止找同样值得动作
 
-
+---
 
 ##### 索引
 
@@ -387,7 +387,7 @@ END REPEAT [label];
 8. 字符串不加单引号时索引会失效；
 9. 使用or时索引会失效；
 
-
+---
 
 ##### 查询优化
 
@@ -403,7 +403,7 @@ END REPEAT [label];
    2. 当无法使用索引列，增大 max_length_for_sort_data 参数的设置和增大 sort_buffer_size 参数的设置
    3. where 高于 having，能写在 where 限定条件里就不要去 having 限定
 
-
+---
 
 ##### profiles
 
@@ -416,6 +416,50 @@ END REPEAT [label];
    2. Creating tmp table => 创建临时表
    3. Copying to tmp table on disk => 把内存中临时表复制到磁盘(危险)
    4. locked => 锁死
+
+---
+
+##### 全局查询日志
+
+不建议在生产环境使用
+
+
+
+#### 锁
+
+##### 事务
+
+![](https://tva1.sinaimg.cn/large/006y8mN6ly1g8pvkgnnbhj30vq06sajd.jpg)
+
+![](https://tva1.sinaimg.cn/large/006y8mN6ly1g8pvoiehehj30vo0d1ak2.jpg)
+
+##### 表锁
+
+1. 查看哪些表被加锁：show open tables;
+2. 分析表锁定：show status like 'table%';
+   ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g8pvg2a1jgj30ve05uwlp.jpg)
+
+##### 行锁
+
+1. 索引失效时，行锁会升级为表锁；
+2. 间隙索的危害
+   ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g8pwfdsdccj30vl07w10r.jpg)
+3. 分析行锁：show status like 'innodb_row_lock%';
+   ![](https://tva1.sinaimg.cn/large/006y8mN6ly1g8pwocw520j30vc0bw474.jpg)
+4. 优化建议
+   1. 尽可能让所有数据检索都通过索引来完成，避免无索引行锁升级为表锁
+   2. 合理设计索引，尽量缩小锁的范围
+   3. 尽可能减少检索范围，避免间隙锁
+   4. 尽量控制事务大小，减少锁定资源和时间长度
+   5. 尽可能低级别事务隔离
+
+##### 页锁
+
+开销和加锁时间介于表锁和行锁之间；会出现死锁；锁定粒度介于表锁和行锁之间，并发度一般。
+
+
+
+
 
 
 
