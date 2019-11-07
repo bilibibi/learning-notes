@@ -359,49 +359,65 @@ END REPEAT [label];
 
     8. distinct：优化distinct操作，在找到第一匹配的元组后即停止找同样值得动作
 
-    
 
-    ##### 索引
 
-    **索引优化**
+##### 索引
 
-    1. 尽可能减少join语句中的NestedLoop的循环总次数；
+**索引优化**
 
-    2. 永远用小结果集驱动大的结果集；
+1. 尽可能减少join语句中的NestedLoop的循环总次数；
 
-    3. 优先优化NestedLoop的内层循环；
+2. 永远用小结果集驱动大的结果集；
 
-    4. 保证join语句中被驱动表上join条件字段已经被索引；
+3. 优先优化NestedLoop的内层循环；
 
-    5. 当无法保证被驱动表的join条件字段被索引且内层资源充足的前提下，不要太吝啬JoinBuffer的设置；
+4. 保证join语句中被驱动表上join条件字段已经被索引；
 
-    **索引失效**
+5. 当无法保证被驱动表的join条件字段被索引且内层资源充足的前提下，不要太吝啬JoinBuffer的设置；
 
-    1. 最左前缀法则；
-    2. 不在索引列上做任何操作(计算、函数、(自动或手动)类型转换)，会导致索引失效；
-    3. 存储引擎不能使用索引中范围条件右边的列；
-    4. 尽量使用覆盖索引(只访问索引的查询)，减少select *；
-    5. 使用不等于(!= 或 <>)时无法使用索引；
-    6. 使用is null 或 is not null 时无法使用索引；
-    7. like以通配符%开头时无法使用索引，可以通过覆盖索引避免全表扫描；
-    8. 字符串不加单引号时索引会失效；
-    9. 使用or时索引会失效；
+**索引失效**
 
-    **查询优化**
+1. 最左前缀法则；
+2. 不在索引列上做任何操作(计算、函数、(自动或手动)类型转换)，会导致索引失效；
+3. 存储引擎不能使用索引中范围条件右边的列；
+4. 尽量使用覆盖索引(只访问索引的查询)，减少select *；
+5. 使用不等于(!= 或 <>)时无法使用索引；
+6. 使用is null 或 is not null 时无法使用索引；
+7. like以通配符%开头时无法使用索引，可以通过覆盖索引避免全表扫描；
+8. 字符串不加单引号时索引会失效；
+9. 使用or时索引会失效；
 
-    1. **永远小表驱动大表**
-       select * from A a where a.id in (select b.aid from B b); -> 当A表数据大于B表时用in
-       select * from A a where exists (select 1 from B b where a.id = b.aid); -> 当A表数据小于B表时用exists
-    2. order by 关键字优化
-       1. 尽量使用Index方式排序，避免使用FileSort方式
-       2. order by 语句使用索引最左前缀字段
-       3. 使用 where 子句与 order by 子句条件列组合满足索引最左前缀
-    3. group by 关键字优化
-       1. 先排序后进行分组，遵照索引建的最佳左前缀
-       2. 当无法使用索引列，增大 max_length_for_sort_data 参数的设置和增大 sort_buffer_size 参数的设置
-       3. where高于having，能写在where限定条件里就不要去having限定
 
-    
+
+##### 查询优化
+
+1. **永远小表驱动大表**
+   select * from A a where a.id in (select b.aid from B b); -> 当A表数据大于B表时用in
+   select * from A a where exists (select 1 from B b where a.id = b.aid); -> 当A表数据小于B表时用exists
+2. order by 关键字优化
+   1. 尽量使用Index方式排序，避免使用FileSort方式
+   2. order by 语句使用索引最左前缀字段
+   3. 使用 where 子句与 order by 子句条件列组合满足索引最左前缀
+3. group by 关键字优化
+   1. 先排序后进行分组，遵照索引建的最佳左前缀
+   2. 当无法使用索引列，增大 max_length_for_sort_data 参数的设置和增大 sort_buffer_size 参数的设置
+   3. where 高于 having，能写在 where 限定条件里就不要去 having 限定
+
+
+
+##### profiles
+
+1. 查看当前mysql版本是否支持：show variables like 'profiling';
+2. 开启记录功能：set profiling=on;
+3. 查看结果：show profiles;
+4. 诊断SQL：show profile cpu, block io for query 上一步中问题SQL数字号码;
+5. 需要注意的结论：
+   1. converting HEAP to MyISAM => 查询结果太大，内存
+   2. Creating tmp table => 创建临时表
+   3. Copying to tmp table on disk => 把内存中临时表复制到磁盘(危险)
+   4. locked => 锁死
+
+
 
 
 
