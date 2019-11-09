@@ -468,15 +468,17 @@ END REPEAT [label];
    ![](https://i.loli.net/2019/11/09/Slw1DtUgbBQX4oC.jpg)
 4. 从服务器执行命令
    1. STOP SLAVE;
-   2. change master to master_host='主服务器IP', 
-      master_port='主服务器端口号', 
-      master_user='主服务器用户名', 
-      master_password='主服务器密码', 
+   2. change master to master_host='Master的地址', 
+      master_port='Master的端口号', 
+      master_user='用于数据同步的用户', 
+      master_password='用于同步的用户的密码', 
       master_log_file='File值', 
-      master_log_pos=Position值;
+      master_log_pos=Position值,
+      master_connect_retry=30;
    3. START SLAVE;
 5. 检查从服务器复制功能状态(SHOW SLAVE STATUS\G;)
    其中Slave_IO_Running和Slave_SQL_Running都为YES，表示配置成功；
+6. eg: [基于Docker的Mysql主从复制搭建](https://www.cnblogs.com/songwenjie/p/9371422.html)
 
 
 
