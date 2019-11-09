@@ -459,6 +459,25 @@ END REPEAT [label];
 
 
 
+#### 主从复制
+
+1. 获取主从机的IP；
+2. 配置主服务器和从服务器的配置文件(/etc/mysql/my.cnf)，加入server-id和log-bin，重启mysql；
+   ![](https://i.loli.net/2019/11/09/bjqzCIBctAl6a7x.jpg)
+3. 主服务器查看日志(SHOW MASTRE STATUS;)，记录File和Position的值，然后不要操作主服务器；
+   ![](https://i.loli.net/2019/11/09/Slw1DtUgbBQX4oC.jpg)
+4. 从服务器执行命令
+   1. STOP SLAVE;
+   2. change master to master_host='主服务器IP', 
+      master_port='主服务器端口号', 
+      master_user='主服务器用户名', 
+      master_password='主服务器密码', 
+      master_log_file='File值', 
+      master_log_pos=Position值;
+   3. START SLAVE;
+5. 检查从服务器复制功能状态(SHOW SLAVE STATUS\G;)
+   其中Slave_IO_Running和Slave_SQL_Running都为YES，表示配置成功；
+
 
 
 
