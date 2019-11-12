@@ -7,8 +7,8 @@ DESC seckill;
 
 # 字符函数
 # length 获取参数值的字节个数
-select LENGTH('fangyj');
-select LENGTH('方余佳');
+select LENGTH('alibaba');
+select LENGTH('阿里巴巴');
 
 SHOW VARIABLES LIKE '%char%';
 
@@ -291,16 +291,25 @@ END REPEAT [label];
 
 ##### 机读顺序
 
-1. FROM
-2. ON
-3. JOIN
-4. WHERE
-5. GROUP BY
-6. HAVING
-7. SELECT
-8. DISTINCT
-9. ORDER BY
-10. LIMIT
+(8) SELECT (9) DISTINCT <select_list>
+
+(1) FROM <left_table>
+
+(3) <join_type> JOIN <right_tabe>
+
+(2)                      ON <join_condition>
+
+(4) WHERE <where_condition>
+
+(5) GROUP BY <group_by_list>
+
+(6) WITH {CUBE|ROLLUP}
+
+(7) HAVING <having_condition>
+
+(10) ORDER BY <order_by_list>
+
+(11) LIMIT <limit_number>
 
 ---
 
@@ -461,6 +470,8 @@ END REPEAT [label];
 
 #### 主从复制
 
+[基于Docker的Mysql主从复制搭建](https://www.cnblogs.com/songwenjie/p/9371422.html)
+
 1. 获取主从机的IP；
 2. 配置主服务器和从服务器的配置文件(/etc/mysql/my.cnf)，加入server-id和log-bin，重启mysql；
    ![](https://i.loli.net/2019/11/09/bjqzCIBctAl6a7x.jpg)
@@ -478,7 +489,6 @@ END REPEAT [label];
    3. START SLAVE;
 5. 检查从服务器复制功能状态(SHOW SLAVE STATUS\G;)
    其中Slave_IO_Running和Slave_SQL_Running都为YES，表示配置成功；
-6. eg: [基于Docker的Mysql主从复制搭建](https://www.cnblogs.com/songwenjie/p/9371422.html)
 
 
 
